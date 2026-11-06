@@ -34,6 +34,15 @@ main{max-width:1440px;margin:auto;padding:18px;display:grid;grid-template-column
 footer{text-align:center;color:#91a0b3;font-size:11px;padding:0 0 16px}
 @media(max-width:1000px){main{grid-template-columns:190px minmax(280px,1fr)}.right-panel{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1fr}.right-panel .panel{min-width:0}}
 @media(max-width:650px){header{padding:0 12px}.brand{font-size:17px}.top-actions button{padding:9px}.top-actions .hide-mobile{display:none}main{padding:10px;grid-template-columns:1fr}.panel.palette{order:2}.workspace{order:1}.right-panel{order:3;display:flex}.stage{height:250px}.palette{display:grid;grid-template-columns:1fr 1fr;gap:4px}.category{grid-column:1/-1}.block{margin:2px 0}.top-actions{gap:5px}}
+
+body.dark{--surface:#17263b;--page:#0d1727;--ink:#e8f1ff;--line:#2c405b;--muted:#9aacc4;--codebg:#101d30;color:var(--ink)}
+body.dark header,body.dark .panel{background:var(--surface);color:var(--ink)}
+body.dark .code-area{background:var(--codebg)}body.dark .dropzone{border-color:#46617f}
+.costume-tools{padding:13px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.costume-tools label{font-size:11px;font-weight:900;color:var(--muted);display:grid;gap:5px}
+.costume-tools select{width:100%;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink)}
+.costume-preview{grid-column:1/-1;background:var(--codebg);border-radius:12px;padding:10px;text-align:center;font-size:30px}
+.costume-on-stage{position:absolute;left:50%;top:35%;transform:translateX(-50%);z-index:3;font-size:22px;pointer-events:none;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -44,7 +53,7 @@ footer{text-align:center;color:#91a0b3;font-size:11px;padding:0 0 16px}
     <button class="soft hide-mobile" id="newBtn">＋ New</button>
     <button class="soft hide-mobile" id="saveBtn">Save project</button>
     <button class="soft hide-mobile" id="openBtn">Open project</button>
-    <button class="primary" id="runBtn">▶ Run</button>
+    <button class="soft" id="themeBtn">🌙 Theme</button><button class="primary" id="runBtn">▶ Run</button>
     <button class="danger" id="stopBtn">■</button>
   </div>
 </header>
@@ -58,10 +67,12 @@ footer{text-align:center;color:#91a0b3;font-size:11px;padding:0 0 16px}
       <div class="block motion" draggable="true" data-type="move"><span class="symbol">↔️</span> Move 10 steps</div>
       <div class="block motion" draggable="true" data-type="turn"><span class="symbol">↻</span> Turn 15 degrees</div>
       <div class="block motion" draggable="true" data-type="jump"><span class="symbol">⬆️</span> Jump</div>
+      <div class="block motion" draggable="true" data-type="glide">🛝 Glide</div><div class="block motion" draggable="true" data-type="left">⬅️ Move left</div><div class="block motion" draggable="true" data-type="center">🎯 Center</div><div class="block motion" draggable="true" data-type="bounce">🏀 Bounce</div><div class="block motion" draggable="true" data-type="spin">🌀 Spin</div>
       <div class="category">💬 Looks</div>
       <div class="block looks" draggable="true" data-type="say"><span class="symbol">💬</span> Say Hello!</div>
       <div class="block looks" draggable="true" data-type="size"><span class="symbol">🔍</span> Grow</div>
       <div class="block looks" draggable="true" data-type="hide"><span class="symbol">👻</span> Hide / Show</div>
+      <div class="block looks" draggable="true" data-type="think">💭 Think</div><div class="block looks" draggable="true" data-type="shrink">🔎 Shrink</div><div class="block looks" draggable="true" data-type="backdrop">🌅 Change backdrop</div>
       <div class="category">🔁 Control</div>
       <div class="block control" draggable="true" data-type="wait"><span class="symbol">⏱️</span> Wait 1 second</div>
       <div class="block control" draggable="true" data-type="repeat"><span class="symbol">🔁</span> Repeat 3 times</div>
@@ -70,7 +81,7 @@ footer{text-align:center;color:#91a0b3;font-size:11px;padding:0 0 16px}
   <section class="workspace">
     <div class="panel stage-panel">
       <div class="stage-toolbar"><div class="stage-title">🎬 My project <span class="status" id="status">Ready to create!</span></div><button class="soft" id="resetBtn">↺ Reset</button></div>
-      <div class="stage" id="stage"><div class="stage-hint">Your stage</div><div class="sprite" id="sprite">🐶</div></div>
+      <div class="stage" id="stage"><div class="stage-hint">Your stage</div><div class="sprite" id="sprite">🐶</div><div class="costume-on-stage" id="costumeOnStage"></div></div>
     </div>
     <div class="panel code-panel">
       <div class="panel-head">🧱 Coding area <span class="small">Drop blocks here ↓</span></div>
@@ -96,7 +107,11 @@ footer{text-align:center;color:#91a0b3;font-size:11px;padding:0 0 16px}
       <div class="panel-head">💡 Quick tip</div>
       <div class="tips"><strong>How to code:</strong><br>1. Drag the green flag block into the coding area.<br>2. Add blue motion or purple looks blocks.<br>3. Press <strong>Run</strong> and watch your character!<br><br>Your projects can be saved as a file on your computer.</div>
     </div>
-  </aside>
+  <div class="panel"><div class="panel-head">🧢 Costume editor</div><div class="costume-tools">
+<label>Hat<select id="hatSelect"><option value="">None</option><option>👑</option><option>🎩</option><option>🧢</option><option>🤠</option></select></label>
+<label>Outfit<select id="outfitSelect"><option value="">None</option><option>👕</option><option>🦺</option><option>🧥</option><option>👔</option></select></label>
+<label>Accessory<select id="accessorySelect"><option value="">None</option><option>🕶️</option><option>⭐</option><option>🎒</option><option>🪽</option></select></label>
+<button class="soft" id="clearCostume">Clear costume</button><div class="costume-preview" id="costumePreview">🐶</div></div></div></aside>
 </main>
 <footer>Blocky.dog Jr · A little place to learn, create, and play · Runs right in your browser</footer>
 <input type="file" id="fileInput" accept=".json,application/json" hidden>
@@ -122,7 +137,7 @@ function renderBlocks(){
   let label=d.label;
   if(b.type==='move')label=`↔️ Move ${b.value} steps`;
   if(b.type==='turn')label=`↻ Turn ${b.value} degrees`;
-  if(b.type==='say')label=`💬 Say: ${b.value}`;
+  if(b.type==='glide')label=`🛝 Glide ${b.value} steps`;if(b.type==='left')label=`⬅️ Move left ${b.value} steps`;if(b.type==='think')label=`💭 Think: ${b.value}`;if(b.type==='say')label=`💬 Say: ${b.value}`;
   if(b.type==='wait')label=`⏱️ Wait ${b.value} second(s)`;
   if(b.type==='repeat')label=`🔁 Repeat ${b.value} times`;
   el.innerHTML=`<span>${label}</span><button class="remove" title="Remove block">×</button>`;
@@ -139,7 +154,7 @@ zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
 zone.addEventListener('drop',e=>{
  e.preventDefault();zone.classList.remove('over');
  const type=e.dataTransfer.getData('new-type'),move=e.dataTransfer.getData('move-index');
- if(type&&defs[type]){let value=defs[type].value;if(type==='say')value=prompt('What should your character say?','Hello!')??'Hello!';if(type==='move')value=Number(prompt('How many steps?','10'))||10;if(type==='turn')value=Number(prompt('How many degrees?','15'))||15;if(type==='wait')value=Math.max(.1,Math.min(10,Number(prompt('How many seconds?','1'))||1));if(type==='repeat')value=Math.max(1,Math.min(10,Number(prompt('Repeat how many times?','3'))||3));blocks.push({type,value});renderBlocks();}
+ if(type&&defs[type]){let value=defs[type].value;if(type==='say'||type==='think')value=prompt(type==='say'?'What should your character say?':'What should your character think?','Hello!')??'Hello!';if(type==='move'||type==='left'||type==='glide')value=Number(prompt('How many steps?','10'))||10;if(type==='turn')value=Number(prompt('How many degrees?','15'))||15;if(type==='wait')value=Math.max(.1,Math.min(10,Number(prompt('How many seconds?','1'))||1));if(type==='repeat')value=Math.max(1,Math.min(10,Number(prompt('Repeat how many times?','3'))||3));blocks.push({type,value});renderBlocks();}
  else if(move!==''){const from=Number(move);if(Number.isInteger(from)&&from>=0&&from<blocks.length){const [item]=blocks.splice(from,1);blocks.push(item);renderBlocks()}}
 });
 function paint(){sprite.style.left=x+'%';sprite.style.top=y+'%';sprite.style.transform=`translate(-50%,-50%) rotate(${angle}deg) scale(${scale})`;sprite.style.display=hidden?'none':'block';}
@@ -149,6 +164,15 @@ async function runList(list){
  for(const b of list){if(stopFlag)return;
   switch(b.type){
    case'move':x=Math.max(5,Math.min(95,x+Number(b.value)*.7));break;
+   case'left':x=Math.max(5,x-Number(b.value)*.7);break;
+   case'glide':{const start=x,target=Math.min(95,x+Number(b.value)*.7);for(let j=1;j<=10;j++){if(stopFlag)return;x=start+(target-start)*j/10;paint();await sleep(35)}break;}
+   case'center':x=50;y=54;break;
+   case'bounce':for(let j=0;j<3;j++){y=25;paint();await sleep(100);y=60;paint();await sleep(100)}break;
+   case'spin':angle+=360;break;
+   case'think':showBubble('💭 '+b.value);break;
+   case'shrink':scale=Math.max(.35,scale*.8);break;
+   case'backdrop':{const s=document.getElementById('stage'),looks=['linear-gradient(#dff3ff 0 67%,#9edc9b 67%)','linear-gradient(#182b55 0 67%,#273d65 67%)','linear-gradient(#ffd9a1 0 67%,#d8a56d 67%)','linear-gradient(#d6f4ee 0 67%,#78c7a2 67%)'];s.dataset.bg=String((Number(s.dataset.bg||0)+1)%looks.length);s.style.background=looks[Number(s.dataset.bg)];break;}
+   case'forever':{let n=0;while(!stopFlag&&n<1000){await runList([{type:'move',value:10},{type:'wait',value:.15}]);n++}break;}
    case'turn':angle+=Number(b.value);break;
    case'jump':y=Math.max(18,y-13);paint();await sleep(220);y=Math.min(65,y+13);break;
    case'say':sprite.dataset.oldTitle=sprite.title;sprite.title=b.value;showBubble(b.value);break;
@@ -168,11 +192,16 @@ document.getElementById('resetBtn').onclick=reset;
 document.getElementById('newBtn').onclick=()=>{if(confirm('Start a new project? Your current blocks will be cleared.')){blocks=[];renderBlocks();reset()}};
 document.getElementById('characterSelect').onchange=e=>{sprite.textContent=e.target.value;document.getElementById('characterIcon').textContent=e.target.value;};
 document.getElementById('sizeSlider').oninput=e=>{scale=Number(e.target.value)/58;paint()};
-function save(){const data={app:'Blocky.dog Jr',version:1,character:sprite.textContent,blocks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-blocky-jr-project.json';a.click();URL.revokeObjectURL(a.href);statusEl.textContent='Project downloaded!';}
+function getCostume(){return {hat:document.getElementById('hatSelect').value,outfit:document.getElementById('outfitSelect').value,accessory:document.getElementById('accessorySelect').value}}
+function updateCostume(){const c=getCostume();document.getElementById('costumePreview').textContent=(c.hat||'')+sprite.textContent+(c.outfit||'')+(c.accessory||'');document.getElementById('costumeOnStage').textContent=[c.hat,c.outfit,c.accessory].filter(Boolean).join(' ')}
+['hatSelect','outfitSelect','accessorySelect'].forEach(id=>document.getElementById(id).onchange=updateCostume);
+document.getElementById('clearCostume').onclick=()=>{['hatSelect','outfitSelect','accessorySelect'].forEach(id=>document.getElementById(id).value='');updateCostume()};
+document.getElementById('themeBtn').onclick=()=>{document.body.classList.toggle('dark');document.getElementById('themeBtn').textContent=document.body.classList.contains('dark')?'☀️ Theme':'🌙 Theme'};
+function save(){const data={app:'Blocky.dog Jr',version:2,character:sprite.textContent,blocks,costume:getCostume(),dark:document.body.classList.contains('dark')};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-blocky-jr-project.json';a.click();URL.revokeObjectURL(a.href);statusEl.textContent='Project downloaded!';}
 document.getElementById('saveBtn').onclick=save;
 document.getElementById('openBtn').onclick=()=>document.getElementById('fileInput').click();
-document.getElementById('fileInput').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const d=JSON.parse(await file.text());if(!Array.isArray(d.blocks))throw Error();blocks=d.blocks.filter(b=>defs[b.type]);if(d.character){sprite.textContent=d.character;document.getElementById('characterSelect').value=d.character;document.getElementById('characterIcon').textContent=d.character;}renderBlocks();reset();statusEl.textContent='Project opened!';}catch{alert('That file does not look like a Blocky.dog Jr project.')}e.target.value=''};
-renderBlocks();paint();
+document.getElementById('fileInput').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const d=JSON.parse(await file.text());if(!Array.isArray(d.blocks))throw Error();blocks=d.blocks.filter(b=>defs[b.type]);if(d.costume){document.getElementById('hatSelect').value=d.costume.hat||'';document.getElementById('outfitSelect').value=d.costume.outfit||'';document.getElementById('accessorySelect').value=d.costume.accessory||'';updateCostume()}if(d.dark)document.body.classList.add('dark');if(d.character){sprite.textContent=d.character;document.getElementById('characterSelect').value=d.character;document.getElementById('characterIcon').textContent=d.character;}renderBlocks();reset();statusEl.textContent='Project opened!';}catch{alert('That file does not look like a Blocky.dog Jr project.')}e.target.value=''};
+renderBlocks();paint();updateCostume();
 </script>
 </body>
 </html>
