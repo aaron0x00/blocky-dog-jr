@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blocky.dog Jr</title>
+<style>
+:root{--blue:#2878e8;--navy:#15345f;--sky:#eaf4ff;--ink:#23334b;--line:#d9e5f3;--green:#28b56b;--yellow:#ffd45c}
+*{box-sizing:border-box}body{margin:0;background:#f4f8fd;color:var(--ink);font-family:Inter,ui-rounded,"Trebuchet MS",Arial,sans-serif}
+header{height:68px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 22px;position:sticky;top:0;z-index:5}
+.logo{width:43px;height:43px;object-fit:contain;border-radius:12px}.brand{font-size:21px;font-weight:900;color:#17365f;letter-spacing:-.7px}.brand span{color:var(--blue)}.jr{font-size:12px;background:#e8f3ff;color:#236bd0;border-radius:20px;padding:5px 9px;font-weight:900}
+.top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+button{border:0;border-radius:11px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer;transition:.15s}button:hover{transform:translateY(-1px);filter:brightness(.98)}button:active{transform:translateY(0)}.primary{background:var(--blue);color:white}.soft{background:#edf4fc;color:#315276}.green{background:#24ae68;color:white}.danger{background:#fff0ef;color:#bd5149}
+main{max-width:1440px;margin:auto;padding:18px;display:grid;grid-template-columns:225px minmax(300px,1fr) 260px;gap:15px;min-height:calc(100vh - 68px)}
+.panel{background:white;border:1px solid var(--line);border-radius:17px;box-shadow:0 4px 18px #244b7310;overflow:hidden}
+.panel-head{padding:14px 15px;border-bottom:1px solid #edf1f6;font-weight:900;display:flex;align-items:center;justify-content:space-between}
+.small{font-size:11px;color:#71839b;font-weight:700}.palette{padding:12px}.category{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#8b9bb0;font-weight:900;margin:10px 3px 7px}
+.block{padding:11px 12px;border-radius:12px;color:white;font-weight:900;font-size:13px;margin:7px 0;cursor:grab;box-shadow:0 3px 0 #0002;user-select:none;display:flex;align-items:center;gap:8px}
+.block:active{cursor:grabbing}.motion{background:#3986e8}.looks{background:#9b62d6}.control{background:#e9a72e;color:#533600}.start{background:#29ad72}.block .symbol{font-size:17px}
+.workspace{display:flex;flex-direction:column;gap:14px;min-width:0}
+.stage-panel{padding:14px}.stage-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:12px}.stage-title{font-weight:900;margin-right:auto}.stage{height:300px;border:2px solid #dce9f7;border-radius:15px;background:linear-gradient(#dff3ff 0 67%,#9edc9b 67%);position:relative;overflow:hidden}
+.stage:before{content:"";position:absolute;left:0;right:0;bottom:0;height:28px;background:#7fc77c}
+.sprite{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);font-size:58px;transition:left .25s,top .25s,transform .25s;z-index:2;filter:drop-shadow(0 4px 2px #4565)}.stage-hint{position:absolute;top:12px;left:13px;font-size:11px;color:#64809b;font-weight:800;background:#ffffffb8;padding:6px 9px;border-radius:20px}
+.code-panel{flex:1;min-height:270px}.code-area{padding:14px;min-height:210px;background:#f9fbfe}
+.dropzone{min-height:175px;border:2px dashed #c8d9ec;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;transition:.15s}
+.dropzone.over{background:#eaf4ff;border-color:var(--blue)}
+.drop-placeholder{text-align:center;color:#8ca0b8;font-weight:800;font-size:13px;padding:40px 10px}
+.code-block{display:flex;align-items:center;gap:10px;color:white;padding:10px 12px;border-radius:11px;font-weight:900;font-size:13px;box-shadow:0 3px 0 #0002;cursor:grab}
+.code-block .remove{margin-left:auto;background:#ffffff30;color:white;border-radius:7px;padding:3px 7px}
+.right-panel{display:flex;flex-direction:column;gap:14px}.character{padding:16px;text-align:center}.big-character{font-size:58px}.character h3{margin:5px 0}.character p{font-size:12px;color:#73849a;line-height:1.5;margin:5px 0 12px}
+.props{padding:12px 15px}.prop-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #eff3f7;font-size:12px;font-weight:800}.prop-row:last-child{border:0}.prop-row input{width:100px;accent-color:var(--blue)}
+.tips{padding:14px;font-size:12px;color:#637891;line-height:1.55}.tips strong{color:#27496f}
+.status{font-size:11px;font-weight:800;color:#6c819b;margin-left:5px}
+footer{text-align:center;color:#91a0b3;font-size:11px;padding:0 0 16px}
+@media(max-width:1000px){main{grid-template-columns:190px minmax(280px,1fr)}.right-panel{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1fr}.right-panel .panel{min-width:0}}
+@media(max-width:650px){header{padding:0 12px}.brand{font-size:17px}.top-actions button{padding:9px}.top-actions .hide-mobile{display:none}main{padding:10px;grid-template-columns:1fr}.panel.palette{order:2}.workspace{order:1}.right-panel{order:3;display:flex}.stage{height:250px}.palette{display:grid;grid-template-columns:1fr 1fr;gap:4px}.category{grid-column:1/-1}.block{margin:2px 0}.top-actions{gap:5px}}
+</style>
+</head>
+<body>
+<header>
+  <img class="logo" src="https://blocky.dog/hack_dog_2.svg" alt="Blocky.dog logo" onerror="this.style.display='none'">
+  <div class="brand">blocky<span>.dog</span></div><div class="jr">JR</div>
+  <div class="top-actions">
+    <button class="soft hide-mobile" id="newBtn">＋ New</button>
+    <button class="soft hide-mobile" id="saveBtn">Save project</button>
+    <button class="soft hide-mobile" id="openBtn">Open project</button>
+    <button class="primary" id="runBtn">▶ Run</button>
+    <button class="danger" id="stopBtn">■</button>
+  </div>
+</header>
+<main>
+  <section class="panel">
+    <div class="panel-head">🧩 Blocks <span class="small">Drag a block</span></div>
+    <div class="palette" id="palette">
+      <div class="category">🚩 Start</div>
+      <div class="block start" draggable="true" data-type="start"><span class="symbol">🚩</span> When play clicked</div>
+      <div class="category">➡️ Motion</div>
+      <div class="block motion" draggable="true" data-type="move"><span class="symbol">↔️</span> Move 10 steps</div>
+      <div class="block motion" draggable="true" data-type="turn"><span class="symbol">↻</span> Turn 15 degrees</div>
+      <div class="block motion" draggable="true" data-type="jump"><span class="symbol">⬆️</span> Jump</div>
+      <div class="category">💬 Looks</div>
+      <div class="block looks" draggable="true" data-type="say"><span class="symbol">💬</span> Say Hello!</div>
+      <div class="block looks" draggable="true" data-type="size"><span class="symbol">🔍</span> Grow</div>
+      <div class="block looks" draggable="true" data-type="hide"><span class="symbol">👻</span> Hide / Show</div>
+      <div class="category">🔁 Control</div>
+      <div class="block control" draggable="true" data-type="wait"><span class="symbol">⏱️</span> Wait 1 second</div>
+      <div class="block control" draggable="true" data-type="repeat"><span class="symbol">🔁</span> Repeat 3 times</div>
+    </div>
+  </section>
+  <section class="workspace">
+    <div class="panel stage-panel">
+      <div class="stage-toolbar"><div class="stage-title">🎬 My project <span class="status" id="status">Ready to create!</span></div><button class="soft" id="resetBtn">↺ Reset</button></div>
+      <div class="stage" id="stage"><div class="stage-hint">Your stage</div><div class="sprite" id="sprite">🐶</div></div>
+    </div>
+    <div class="panel code-panel">
+      <div class="panel-head">🧱 Coding area <span class="small">Drop blocks here ↓</span></div>
+      <div class="code-area"><div class="dropzone" id="dropzone"><div class="drop-placeholder" id="placeholder">Drag blocks from the left and snap them into your program!</div></div></div>
+    </div>
+  </section>
+  <aside class="right-panel">
+    <div class="panel character">
+      <div class="big-character" id="characterIcon">🐶</div>
+      <h3>My character</h3><p>Pick a character for your project.</p>
+      <select id="characterSelect" style="padding:9px;border:1px solid #d9e5f3;border-radius:10px;font-weight:800;color:#315276">
+        <option value="🐶">Dog</option><option value="🐱">Cat</option><option value="🐸">Frog</option><option value="🐰">Bunny</option><option value="🐻">Bear</option><option value="🤖">Robot</option><option value="🦊">Fox</option>
+      </select>
+    </div>
+    <div class="panel">
+      <div class="panel-head">🎨 Character settings</div>
+      <div class="props">
+        <div class="prop-row"><label for="sizeSlider">Size</label><input id="sizeSlider" type="range" min="40" max="120" value="58"></div>
+        <div class="prop-row"><label for="speedSlider">Speed</label><input id="speedSlider" type="range" min="1" max="10" value="5"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">💡 Quick tip</div>
+      <div class="tips"><strong>How to code:</strong><br>1. Drag the green flag block into the coding area.<br>2. Add blue motion or purple looks blocks.<br>3. Press <strong>Run</strong> and watch your character!<br><br>Your projects can be saved as a file on your computer.</div>
+    </div>
+  </aside>
+</main>
+<footer>Blocky.dog Jr · A little place to learn, create, and play · Runs right in your browser</footer>
+<input type="file" id="fileInput" accept=".json,application/json" hidden>
+<script>
+const palette=document.getElementById('palette'), zone=document.getElementById('dropzone'), sprite=document.getElementById('sprite');
+const statusEl=document.getElementById('status'); let blocks=[], running=false, stopFlag=false, x=50,y=54,angle=0,scale=1,hidden=false;
+const defs={
+ start:{label:'🚩 When play clicked',cls:'start',value:''},
+ move:{label:'↔️ Move 10 steps',cls:'motion',value:10},
+ turn:{label:'↻ Turn 15 degrees',cls:'motion',value:15},
+ jump:{label:'⬆️ Jump',cls:'motion',value:''},
+ say:{label:'💬 Say Hello!',cls:'looks',value:'Hello!'},
+ size:{label:'🔍 Grow',cls:'looks',value:''},
+ hide:{label:'👻 Hide / Show',cls:'looks',value:''},
+ wait:{label:'⏱️ Wait 1 second',cls:'control',value:1},
+ repeat:{label:'🔁 Repeat 3 times',cls:'control',value:3}
+};
+function renderBlocks(){
+ zone.innerHTML='';
+ if(!blocks.length){zone.innerHTML='<div class="drop-placeholder" id="placeholder">Drag blocks from the left and snap them into your program!</div>';return;}
+ blocks.forEach((b,i)=>{
+  const d=defs[b.type],el=document.createElement('div');el.className='code-block '+d.cls;el.draggable=true;el.dataset.index=i;
+  let label=d.label;
+  if(b.type==='move')label=`↔️ Move ${b.value} steps`;
+  if(b.type==='turn')label=`↻ Turn ${b.value} degrees`;
+  if(b.type==='say')label=`💬 Say: ${b.value}`;
+  if(b.type==='wait')label=`⏱️ Wait ${b.value} second(s)`;
+  if(b.type==='repeat')label=`🔁 Repeat ${b.value} times`;
+  el.innerHTML=`<span>${label}</span><button class="remove" title="Remove block">×</button>`;
+  el.querySelector('button').onclick=()=>{blocks.splice(i,1);renderBlocks()};
+  el.addEventListener('dragstart',e=>{e.dataTransfer.setData('move-index',String(i));e.dataTransfer.effectAllowed='move'});
+  el.addEventListener('dragover',e=>e.preventDefault());
+  el.addEventListener('drop',e=>{e.preventDefault();const from=Number(e.dataTransfer.getData('move-index'));if(Number.isInteger(from)&&from!==i&&from>=0&&from<blocks.length){const [item]=blocks.splice(from,1);blocks.splice(i,0,item);renderBlocks()}});
+  zone.appendChild(el);
+ });
+}
+palette.querySelectorAll('.block').forEach(el=>el.addEventListener('dragstart',e=>{e.dataTransfer.setData('new-type',el.dataset.type);e.dataTransfer.effectAllowed='copy'}));
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over')});
+zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+zone.addEventListener('drop',e=>{
+ e.preventDefault();zone.classList.remove('over');
+ const type=e.dataTransfer.getData('new-type'),move=e.dataTransfer.getData('move-index');
+ if(type&&defs[type]){let value=defs[type].value;if(type==='say')value=prompt('What should your character say?','Hello!')??'Hello!';if(type==='move')value=Number(prompt('How many steps?','10'))||10;if(type==='turn')value=Number(prompt('How many degrees?','15'))||15;if(type==='wait')value=Math.max(.1,Math.min(10,Number(prompt('How many seconds?','1'))||1));if(type==='repeat')value=Math.max(1,Math.min(10,Number(prompt('Repeat how many times?','3'))||3));blocks.push({type,value});renderBlocks();}
+ else if(move!==''){const from=Number(move);if(Number.isInteger(from)&&from>=0&&from<blocks.length){const [item]=blocks.splice(from,1);blocks.push(item);renderBlocks()}}
+});
+function paint(){sprite.style.left=x+'%';sprite.style.top=y+'%';sprite.style.transform=`translate(-50%,-50%) rotate(${angle}deg) scale(${scale})`;sprite.style.display=hidden?'none':'block';}
+function reset(){x=50;y=54;angle=0;scale=Number(document.getElementById('sizeSlider').value)/58;hidden=false;paint();statusEl.textContent='Ready to create!';}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function runList(list){
+ for(const b of list){if(stopFlag)return;
+  switch(b.type){
+   case'move':x=Math.max(5,Math.min(95,x+Number(b.value)*.7));break;
+   case'turn':angle+=Number(b.value);break;
+   case'jump':y=Math.max(18,y-13);paint();await sleep(220);y=Math.min(65,y+13);break;
+   case'say':sprite.dataset.oldTitle=sprite.title;sprite.title=b.value;showBubble(b.value);break;
+   case'size':scale=Math.min(2.1,scale*1.2);break;
+   case'hide':hidden=!hidden;break;
+   case'wait':paint();await sleep(Number(b.value)*1000);break;
+   case'repeat':for(let n=0;n<Number(b.value);n++){await runList([{type:'move',value:10},{type:'wait',value:.15}]);if(stopFlag)return;}break;
+  }
+  paint();await sleep(Math.max(90,420-Number(document.getElementById('speedSlider').value)*32));
+ }
+}
+function showBubble(msg){let bubble=document.getElementById('speech');if(!bubble){bubble=document.createElement('div');bubble.id='speech';bubble.style.cssText='position:absolute;z-index:4;left:55%;top:18%;background:white;border:2px solid #9b62d6;border-radius:14px;padding:8px 12px;font-weight:900;font-size:13px;max-width:45%;box-shadow:0 3px 10px #3453';document.getElementById('stage').appendChild(bubble)}bubble.textContent=msg;clearTimeout(window.bubbleTimer);window.bubbleTimer=setTimeout(()=>bubble.remove(),2200)}
+async function run(){if(running)return;stopFlag=false;reset();running=true;statusEl.textContent='Running…';const sequence=blocks.filter(b=>b.type!=='start');await runList(sequence);running=false;if(!stopFlag)statusEl.textContent='Finished! 🎉';}
+document.getElementById('runBtn').onclick=run;
+document.getElementById('stopBtn').onclick=()=>{stopFlag=true;running=false;statusEl.textContent='Stopped';};
+document.getElementById('resetBtn').onclick=reset;
+document.getElementById('newBtn').onclick=()=>{if(confirm('Start a new project? Your current blocks will be cleared.')){blocks=[];renderBlocks();reset()}};
+document.getElementById('characterSelect').onchange=e=>{sprite.textContent=e.target.value;document.getElementById('characterIcon').textContent=e.target.value;};
+document.getElementById('sizeSlider').oninput=e=>{scale=Number(e.target.value)/58;paint()};
+function save(){const data={app:'Blocky.dog Jr',version:1,character:sprite.textContent,blocks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-blocky-jr-project.json';a.click();URL.revokeObjectURL(a.href);statusEl.textContent='Project downloaded!';}
+document.getElementById('saveBtn').onclick=save;
+document.getElementById('openBtn').onclick=()=>document.getElementById('fileInput').click();
+document.getElementById('fileInput').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const d=JSON.parse(await file.text());if(!Array.isArray(d.blocks))throw Error();blocks=d.blocks.filter(b=>defs[b.type]);if(d.character){sprite.textContent=d.character;document.getElementById('characterSelect').value=d.character;document.getElementById('characterIcon').textContent=d.character;}renderBlocks();reset();statusEl.textContent='Project opened!';}catch{alert('That file does not look like a Blocky.dog Jr project.')}e.target.value=''};
+renderBlocks();paint();
+</script>
+</body>
+</html>
